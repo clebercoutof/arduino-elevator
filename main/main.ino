@@ -1,4 +1,4 @@
-#include <Elevador.h> //INCLUSÃO DA BIBLIOTECA NECESSÁRIA
+#include "Elevador.h"//INCLUSÃO DA BIBLIOTECA NECESSÁRIA
 
 //Objeto Elevador
 Elevador elevador;
@@ -11,7 +11,7 @@ void setup (){
 
 void loop(){
   int testPos = 10;
-  string testMessage = "A MENSAGEM";
+  String testMessage = "A MENSAGEM";
 
   // Por padrão o estado atual sempre começa em parado, essa função deve ficar em loop lendo o botão
   if(elevador.estadoAtual == PARADO){
@@ -24,10 +24,9 @@ void loop(){
     // mostrar SELEÇÃO
     };
 
-  if(elevador.estadoAtual == MOVENDO{
+  if(elevador.estadoAtual == MOVENDO){
     // elevador.estadoMoving();
     // função mover
   };
 
   };
-}

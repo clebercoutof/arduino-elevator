@@ -22,18 +22,18 @@ const int PINO_BOTAO = 7; //PINO DIGITAL UTILIZADO PELO BOTAO
 const int PINO_INPUT_SENSOR = 8; //PINO DIGITAL UTILIZADO PELO SONAR
 const int PINO_OUTPUT_SENSOR = 9; //PINO DIGITAL UTILIZADO PELO SONAR
 
-const int SERVO_START_POSITION = 0 // POSICAO INICIAL DO SERVO
+const int SERVO_START_POSITION = 0; // POSICAO INICIAL DO SERVO
 
 // Altura dos andares em centimetro
 const int ALTURA_0 = 0;
 const int ALTURA_1 = 30;
 const int ALTURA_2 = 60;
 
-const string MOVENDO = "MOVENDO";
-const string PARADO = "PARADO";
+const String MOVENDO = "MOVENDO";
+const String PARADO = "PARADO";
 
-//Tolerancia de altura em centimetros
-int TOLERANCIA_ALTURA_ANDAR = 1;
+//Tolerancia de altura em centimetrosc
+const int TOLERANCIA_ALTURA_ANDAR = 1;
 
 struct Andar{
   int piso;
@@ -63,29 +63,31 @@ class Elevador {
     Andar andarDestino;
     int alturaAtual;
     int alturaDestino;
-    external LiquidCrystal lcd;
+    LiquidCrystal *lcd;
     //Variaveis do servo
-    external Servo servo;
+    Servo servo;
     int positionServo;
 
     bool setPosServo(int pos);
     //Declaraçao estado atual
-    string estadoAtual;
+    String estadoAtual;
     //Declaração função de estados
     bool estadoWaitingForInput();
     bool estadoMoving();
     // Função que lê estado
-    string lerEstado();
+    String lerEstado();
 
     // Função que lê valor do botão
     bool lerBotao();
     // Função que lê valor do botão
     int lerSonar();
     // Função para mostrar na tela
-    void mostrarNaTela(string mensagem);
+    void mostrarNaTela(String mensagem);
 
     // Funçao que manda um estado
-    bool configurarEstado(string estado);
+    bool configurarEstado(String estado);
     // Declaração função configurar elevador
     bool configurarElevador();
   };
+  
+#endif

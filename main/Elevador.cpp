@@ -42,21 +42,23 @@ bool Elevador::configurarLCD(){
   pinVDD = PINO_LCD_VDD;
   pinLCDBacklight = PINO_LCD_BACKLIGHT;
   //CREATES LCD OBJECT
-  lcd = LiquidCrystal lcd(pinRs,
+  LiquidCrystal *lcd = new LiquidCrystal(pinRs,
                           pinEn,
                           pinD4,
                           pinD5,
                           pinD6,
                           pinD7);
   // LIGA LCD
-  lcd.begin(pinLCDBacklight, pinVDD);
-  lcd.print("LOVE IN THE ELEVATOR");
+  lcd->begin(pinLCDBacklight, pinVDD);
+  lcd->print("LOVE IN THE ELEVATOR");
 };
 
 //Função para ler distância utilizando sonar
 int Elevador::lerSonar(){
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(5);
+  int distance;
+  long duration;
+  digitalWrite(pinTrigSensor, LOW);
+  delayMicroseconds(2);
 
   // Trigger the sensor by setting the trigPin high for 10 microseconds:
   digitalWrite(pinTrigSensor, HIGH);
@@ -88,13 +90,13 @@ bool Elevador::lerBotao(){
 }
 
 //Função para ler estado atual
-string Elevador::lerEstado() {
-  return Elevador.estadoAtual;
+String Elevador::lerEstado() {
+  return estadoAtual;
 }
 
 //Função para mostrar em dispositivo LCD
-bool Elevador::mostrarNaTela(string mensagem){
-  lcd.print(string);
+void Elevador::mostrarNaTela(String mensagem){
+  this->lcd->print(mensagem);
 }
 
 //Função que manda o servo para uma posição
@@ -103,13 +105,14 @@ bool Elevador::setPosServo(int pos){
 }
 
 // Funçao para setar o estado da maquina de estado do codigo
-bool Elevador::configurarEstado(string estado){
-  if estado == MOVENDO:
-    Elevador.estadoAtual = MOVENDO;
-    return true;
+bool Elevador::configurarEstado(String estado){
+  if(estadoAtual == MOVENDO){
+    estadoAtual = MOVENDO;
+    return true;}
 
-  if estado == MOVENDO:
-    Elevador.estadoAtual = MOVENDO
-    return true;
+  if(estadoAtual == MOVENDO){
+    estadoAtual = MOVENDO;
+    return true;}
+
   return false;
 }
