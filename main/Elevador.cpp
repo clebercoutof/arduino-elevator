@@ -4,6 +4,21 @@
 // O construtor é chamado quando eu declaro o meu objeto
 Elevador::Elevador() {
   estadoAtual = PARADO;
+  // Declaração dos andares
+  P0.piso   = 0;
+  P0.nome   ="P0";
+  P0.altura = 0;
+
+  P1.piso   = 1;
+  P1.nome   = "P1";
+  P1.altura = 30;
+
+  P2.piso   = 2;
+  P2.nome   ="P2";
+  P2.altura = 60;
+
+  andarAtual = P0;
+  andarDestino = P1;
 }
 
 bool Elevador::configurarElevador(){
@@ -26,9 +41,12 @@ bool Elevador::configurarDispositivos(){
   pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
   // Configuração do botão
-  pinButton = PINO_BOTAO;
-  pinMode(pinButton,INPUT_PULLUP); // Set the Tilt Switch as an input
+  pinButtonTroca = PINO_BOTAO_TROCA;
+  pinMode(pinButtonTroca,INPUT_PULLUP); // Set the Tilt Switch as an input
 
+  // Configuração do botão
+  pinButtonGo = PINO_BOTAO_GO;
+  pinMode(pinButtonGo,INPUT_PULLUP); // Set the Tilt Switch as an input
 };
 
 bool Elevador::configurarLCD(){
@@ -79,14 +97,45 @@ int Elevador::lerSonar(){
   return distance;
 }
 
-bool Elevador::lerBotao(){
-   int digitalVal = digitalRead(pinButton); // Take a reading
+bool Elevador::lerBotaoTroca(){
+   int digitalVal = digitalRead(pinButtonTroca); // Take a reading
    if(HIGH == digitalVal){
-     mostrarNaTela("APERTOU BOTAO");
+     mostrarNaTela("TROCOU ANDAR");
+     // TROCAR ANDARES
      return true;}
    else{
-     mostrarNaTela("SEM BOTAO");
+    // DISPLAY ANDARES
      return false;}
+}
+
+bool Elevador::lerBotaoGo(){
+   int digitalVal = digitalRead(pinButtonGo); // Take a reading
+   if(HIGH == digitalVal and andarAtual.piso != andarDestino.piso){
+     estadoAtual = MOVENDO;
+     return true;}
+   else{
+    // DISPLAY ANDARES
+     return false;}
+}
+
+bool Elevador::lerBotoes(){
+   if(lerBotaoGo()){
+    estadoAtual = MOVENDO;
+    mostrarNaTela("GO");
+    return true;
+   }
+   else if(lerBotaoTroca()){
+    // DISPLAY ANDARES
+    return true;}
+
+  else{
+    // DISPLAY ANDARES
+    return false;
+  }
+   }
+
+String Elevador::displayAndares(){
+  //String andar_atual = ANDAR_ATUAL
 }
 
 //Função para ler estado atual

@@ -18,7 +18,8 @@ const int PINO_LCD_D6 = 5; //PINO DIGITAL UTILIZADO PELO LCD
 const int PINO_LCD_D7 = 5; //PINO DIGITAL UTILIZADO PELO LCD
 
 const int PINO_SERVO = 6; //PINO DIGITAL UTILIZADO PELO SERVO
-const int PINO_BOTAO = 7; //PINO DIGITAL UTILIZADO PELO BOTAO
+const int PINO_BOTAO_TROCA = 7; //PINO DIGITAL UTILIZADO PELO BOTAO
+const int PINO_BOTAO_GO = 10; //PINO DIGITAL UTILIZADO PELO BOTAO
 const int PINO_INPUT_SENSOR = 8; //PINO DIGITAL UTILIZADO PELO SONAR
 const int PINO_OUTPUT_SENSOR = 9; //PINO DIGITAL UTILIZADO PELO SONAR
 
@@ -37,6 +38,7 @@ const int TOLERANCIA_ALTURA_ANDAR = 1;
 
 struct Andar{
   int piso;
+  String nome;
   int altura;
 };
 
@@ -45,7 +47,8 @@ class Elevador {
   private:
       // Declarção de variaveis internas de pinos
       int pinServo;
-      int pinButton;
+      int pinButtonTroca;
+      int pinButtonGo;
       // Pinos Sonar
       int pinTrigSensor, pinEchoSensor;
       // Pinos LCD
@@ -61,13 +64,16 @@ class Elevador {
     //Declaraçao dos andares
     Andar andarAtual;
     Andar andarDestino;
+    Andar P0;
+    Andar P1;
+    Andar P2;
+
     int alturaAtual;
     int alturaDestino;
     LiquidCrystal *lcd;
     //Variaveis do servo
     Servo servo;
     int positionServo;
-
     bool setPosServo(int pos);
     //Declaraçao estado atual
     String estadoAtual;
@@ -76,9 +82,14 @@ class Elevador {
     bool estadoMoving();
     // Função que lê estado
     String lerEstado();
-
+    // Display Andares
+    String displayAndares();
     // Função que lê valor do botão
-    bool lerBotao();
+    bool lerBotaoGo();
+    // Função que lê valor do botão
+    bool lerBotaoTroca();
+    // Função que lê valor dos botoes
+    bool lerBotoes();
     // Função que lê valor do botão
     int lerSonar();
     // Função para mostrar na tela

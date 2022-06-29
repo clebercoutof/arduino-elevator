@@ -12,21 +12,21 @@ void setup (){
 void loop(){
   int testPos = 10;
   String testMessage = "A MENSAGEM";
-
+  while(elevador.estadoAtual == PARADO){
+      elevador.lerBotoes();
+  }
+  
   // Por padrão o estado atual sempre começa em parado, essa função deve ficar em loop lendo o botão
+  // Código para testes individuais dos componentes
   if(elevador.estadoAtual == PARADO){
-    elevador.lerBotao();
+    elevador.lerBotoes();
     elevador.lerSonar();
     elevador.setPosServo(testPos);
-    elevador.mostrarNaTela(testMessage);
-
-    // elevador.estadoWaitingForInput();
-    // mostrar SELEÇÃO
-    };
+    elevador.mostrarNaTela(testMessage);};
 
   if(elevador.estadoAtual == MOVENDO){
-    // elevador.estadoMoving();
-    // função mover
+    //elevador.estadoMoving();
+    //função mover
   };
 
   };
