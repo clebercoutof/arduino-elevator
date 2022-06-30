@@ -215,7 +215,11 @@ void Elevador::irParaAndar(){
   int distancia_sonar = lerSonar();
   int max_dist = andarDestino.altura + TOLERANCIA_ALTURA_ANDAR;
   int min_dist = andarDestino.altura - TOLERANCIA_ALTURA_ANDAR;
-  if(distancia_sonar <= max_dist and distancia_sonar>= min_dist){
+  if (distancia_sonar >= ALTURA_MAXIMA_PERIGO){
+    mostrarNaTela("ALTURA MÁXIMA ATINGIDA! ELEVADOR PARADO!");
+    estadoAtual = PARADO;
+  }
+  else if(distancia_sonar <= max_dist and distancia_sonar>= min_dist){
     mostrarNaTela("CHEGOU NO ANDAR");
     setPosServo(SERVO_STOP_POSITION); // STOP SERVO
     estadoAtual = PARADO;

@@ -31,6 +31,7 @@ const int SERVO_STOP_POSITION = 90; // POSICAO PARA PARAR O SERVO
 const int ALTURA_0 = 0;
 const int ALTURA_1 = 44;
 const int ALTURA_2 = 85;
+const int ALTURA_MAXIMA_PERIGO = 90;
 
 const String MOVENDO = "MOVENDO";
 const String PARADO = "PARADO";
