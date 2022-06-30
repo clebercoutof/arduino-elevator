@@ -13,6 +13,6 @@ void loop(){
   elevador->configurarElevador();
 
   while(elevador->estadoAtual == PARADO){
-    elevador->displayAndares();
     elevador->lerBotoes();}
+
   };

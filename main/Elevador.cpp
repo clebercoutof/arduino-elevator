@@ -33,15 +33,15 @@ bool Elevador::configurarDispositivos(){
   pinServo = PINO_SERVO;
   // Fala para biblioteca do servo qual pino ele está conectado
   servo.attach(pinServo);
-  servo.write(SERVO_START_POSITION);
+  // servo.write(SERVO_START_POSITION);
 
   // Configuração do sensor
   pinTrigSensor = PINO_OUTPUT_SENSOR;
   pinEchoSensor = PINO_INPUT_SENSOR;
 
   //Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
-  //pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
-  //pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
+  pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
   // Configuração do botão
   pinButtonTroca = PINO_BOTAO_TROCA;
@@ -104,17 +104,24 @@ bool Elevador::lerBotaoTroca(){
    int digitalVal = digitalRead(pinButtonTroca); // Take a reading
    int rest; 
    if(HIGH == digitalVal){
-    i_andar = i_andar++;
+    i_andar = i_andar+ 1;
     rest = i_andar % 3;
+    delay(777);
     switch(rest){
       case 1:
-      andarDestino = P0;
+        mostrarNaTela("ANDAR DESTINO P0");
+        andarDestino = P0;
+        break;
       case 2:
-      andarDestino = P1;
+        mostrarNaTela("ANDAR DESTINO P1");
+        andarDestino = P1;
+        break;
       case 0:
-      andarDestino = P2;
+        mostrarNaTela("ANDAR DESTINO P2");
+        andarDestino = P2;
+        break;
     }
-     // TROCAR ANDARES
+    // TROCAR ANDARES
      return true;}
    else{
     // DISPLAY ANDARES
@@ -125,6 +132,11 @@ bool Elevador::lerBotaoGo(){
    int digitalVal = digitalRead(pinButtonGo); // Take a reading
    if(HIGH == digitalVal and andarAtual.piso != andarDestino.piso){
      estadoAtual = MOVENDO;
+     delay(777);
+     return true;}
+   else if(HIGH == digitalVal and andarAtual.piso == andarDestino.piso){
+     mostrarNaTela("ANDAR DE DESTINO DEVE SER DIFERENTE DO ATUAL");
+     delay(777);
      return true;}
    else{
     // DISPLAY ANDARES
@@ -133,17 +145,17 @@ bool Elevador::lerBotaoGo(){
 
 bool Elevador::lerBotoes(){
    if(lerBotaoGo()){
-      mostrarNaTela("GO");
+      mostrarNaTela("INDO PARA ANDAR:" + andarDestino.nome);
     return true;
    }
    else if(lerBotaoTroca()){
-      mostrarNaTela("TROCA");
-      displayAndares();
+      delayMicroseconds(7);
+      // displayAndares();
     return true;}
 
   else{
-      mostrarNaTela("SEM BOTAO");
-      displayAndares();
+      //mostrarNaTela("SEM BOTAO");
+      //displayAndares();
     return false;
   }}
 
