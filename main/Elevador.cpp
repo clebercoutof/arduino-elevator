@@ -1,6 +1,15 @@
 // Elevador.cpp
 #include "Elevador.h"
 
+    //Objeto do PID
+    double sensorReadValuePID; // Valor lido pelo sensor
+    double setPointPID; // Valor desejado (Altura do Andar)
+    double outputValuePID; // Valor enviado para movimentação do servo
+
+    static AutoPID controladorPID(&sensorReadValuePID, &setPointPID, &outputValuePID
+                          ,OUTPUT_MIN, OUTPUT_MAX
+                          ,KP, KI, KD);
+
 // O construtor é chamado quando eu declaro o meu objeto
 Elevador::Elevador() {
   estadoAtual = PARADO;
@@ -24,11 +33,9 @@ Elevador::Elevador() {
 
 bool Elevador::configurarElevador(){
   configurarDispositivos();
-  controladorPID->setTimeStep(500);
+  controladorPID.setTimeStep(500);
   Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
-  AutoPID *controladorPID= new AutoPID(sensorReadValue, setPoint, OutputValue 
-                               ,OUTPUT_MIN, OUTPUT_MAX 
-                               ,KP, KI, KD);
+
   //configurarLCD();
   return true;
 };
@@ -190,21 +197,21 @@ bool Elevador::setPosServo(int pos){
   servo.write(pos);
 }
 
-void Elevador::controlePID(){
-    *OutputValue = 0.0;
-    *sensorReadValue = 10.0 ; // Valor lido pelo sensor
+void Elevador::controlePID(int sensorRead){
     delayMicroseconds(777);
-    *setPoint = 100.0; // Valor desejado (Altura do Andar)
+    sensorReadValuePID = sensorRead;
+    setPointPID = double(andarDestino.altura); // Valor desejado (Altura do Andar)
     delayMicroseconds(777);
-    controladorPID->run();
-    mostrarNaTela("INPUT PID:" + String(*sensorReadValue));
-    mostrarNaTela("SETPOINT PID:" + String(*setPoint));
-    mostrarNaTela("OUTPUT PID:" + String(*OutputValue));
+    controladorPID.run();
+    mostrarNaTela("INPUT PID:" + String(sensorReadValuePID));
+    mostrarNaTela("SETPOINT PID:" + String(setPointPID));
+    mostrarNaTela("OUTPUT PID:" + String(outputValuePID));
 }
 
 void Elevador::irParaAndar(){
   // ENQUANTO ALTURA ATUAL NÃO FOR ALTURA DESEJADA + OU - TOLERANCIA
-  controlePID();
+  int sensorSim = 10;
+  controlePID(sensorSim);
   // delay(777);
   //estadoAtual = PARADO;
 }

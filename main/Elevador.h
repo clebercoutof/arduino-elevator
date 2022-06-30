@@ -37,7 +37,7 @@ const String PARADO = "PARADO";
 //Tolerancia de altura em centimetrosc
 const int TOLERANCIA_ALTURA_ANDAR = 1;
 
-#define OUTPUT_MIN 0
+#define OUTPUT_MIN -300
 #define OUTPUT_MAX 300
 #define KP 1.0
 #define KI 0.0
@@ -86,14 +86,8 @@ class Elevador {
 
     //Ultrasonic object
     Ultrasonic *ultrasonic; 
-
-    //Objeto do PID
-    AutoPID *controladorPID;
-    double *sensorReadValue; // Valor lido pelo sensor
-    double *setPoint; // Valor desejado (Altura do Andar)
-    double *OutputValue; // Valor enviado para movimentação do servo
     
-    void controlePID();
+    void controlePID(int sensorRead);
     void irParaAndar();
 
     //Declaraçao estado atual
