@@ -54,6 +54,7 @@ class Elevador {
       // Pinos LCD
       int pinRs, pinEn, pinD4, pinD5, pinD6, pinD7,pinVDD,pinLCDBacklight;
 
+      int i_andar;
       // Funções de uso internas para configuração dos dispositivos fisicos
       bool configurarDispositivos();
       bool configurarLCD();

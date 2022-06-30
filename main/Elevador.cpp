@@ -18,7 +18,8 @@ Elevador::Elevador() {
   P2.altura = ALTURA_2;
 
   andarAtual = P0;
-  andarDestino = P1;
+  andarDestino = P2;
+  i_andar = 0;
 }
 
 bool Elevador::configurarElevador(){
@@ -37,10 +38,10 @@ bool Elevador::configurarDispositivos(){
   // Configuração do sensor
   pinTrigSensor = PINO_OUTPUT_SENSOR;
   pinEchoSensor = PINO_INPUT_SENSOR;
-  //CREATES LCD OBJECT
-  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
-  pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
-  pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
+
+  //Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
+  //pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
+  //pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
   // Configuração do botão
   pinButtonTroca = PINO_BOTAO_TROCA;
@@ -75,7 +76,13 @@ bool Elevador::configurarLCD(){
 
 //Função para ler distância utilizando sonar
 int Elevador::lerSonar(){
+  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
+
+  pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
+
   int distancia;
+  String display_distancia;
   digitalWrite(pinTrigSensor, LOW);
   delayMicroseconds(2);
 
@@ -86,19 +93,27 @@ int Elevador::lerSonar(){
 
   // Calculate the distance:
   distancia = (ultrasonic->Ranging(CM)); //VARIÁVEL GLOBAL RECEBE O VALOR DA DISTÂNCIA MEDIDA
-  // Print the distance on the Serial Monitor (Ctrl+Shift+M):
-  // Serial.print("Distance = ");
-  // Serial.print(distance);
-  // Serial.println(" cm");
   
   delay(50);
-  mostrarNaTela(String(distancia));
+  display_distancia = "Distancia Sonar: " + String(distancia) + " cm.";
+  mostrarNaTela(display_distancia);
   return distancia;
 }
 
 bool Elevador::lerBotaoTroca(){
    int digitalVal = digitalRead(pinButtonTroca); // Take a reading
+   int rest; 
    if(HIGH == digitalVal){
+    i_andar = i_andar++;
+    rest = i_andar % 3;
+    switch(rest){
+      case 1:
+      andarDestino = P0;
+      case 2:
+      andarDestino = P1;
+      case 0:
+      andarDestino = P2;
+    }
      // TROCAR ANDARES
      return true;}
    else{
@@ -123,18 +138,19 @@ bool Elevador::lerBotoes(){
    }
    else if(lerBotaoTroca()){
       mostrarNaTela("TROCA");
-    // DISPLAY ANDARES
+      displayAndares();
     return true;}
 
   else{
       mostrarNaTela("SEM BOTAO");
-    // DISPLAY ANDARES
+      displayAndares();
     return false;
-  }
-   }
+  }}
+
 
 String Elevador::displayAndares(){
-  //String andar_atual = ANDAR_ATUAL
+  String display = "Andar atual: " + andarAtual.nome + " / Andar Destino: " + andarDestino.nome; 
+  mostrarNaTela(display);
 }
 
 //Função para ler estado atual
@@ -146,12 +162,13 @@ String Elevador::lerEstado() {
 void Elevador::mostrarNaTela(String mensagem){
   //this->lcd->print(mensagem);
   Serial.print(mensagem);
+  Serial.print("\n");
 }
 
 //Função que manda o servo para uma posição
 bool Elevador::setPosServo(int pos){
-  servo.write(pos);
   mostrarNaTela("SETTING SERVO POS");
+  servo.write(pos);
 }
 
 // Funçao para setar o estado da maquina de estado do codigo
