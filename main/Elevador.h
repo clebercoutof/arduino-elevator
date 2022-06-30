@@ -26,6 +26,7 @@ const int PINO_OUTPUT_SENSOR = 13; //PINO DIGITAL UTILIZADO PELO SONAR
 
 const int SERVO_START_POSITION = 0; // POSICAO INICIAL DO SERVO
 
+const int SERVO_STOP = 90; 
 // Altura dos andares em centimetro
 const int ALTURA_0 = 0;
 const int ALTURA_1 = 30;
@@ -62,55 +63,36 @@ class Elevador {
       int pinRs, pinEn, pinD4, pinD5, pinD6, pinD7,pinVDD,pinLCDBacklight;
 
       int i_andar;
-      // Funções de uso internas para configuração dos dispositivos fisicos
-      bool configurarDispositivos();
+      bool configurarDispositivos(); // Funçao para configurar dispositivos e portas
       bool configurarLCD();
 
   public:
-    // Declaração da classe
-    Elevador();
-    //Declaraçao dos andares
-    Andar andarAtual;
-    Andar andarDestino;
-    Andar P0;
-    Andar P1;
-    Andar P2;
+    Elevador(); // Construtor da Classe
+    Andar andarAtual; // Variavel para armazenar o Andar ATUAL
+    Andar andarDestino;// Variavel para armazenar o Andar DESTINO
+    Andar P0; // Variavel para armazenar os dados do PISO 0
+    Andar P1; // Variavel para armazenar os dados do PISO 1 
+    Andar P2; // Variavel para armazenar os dados do PISO 2
 
-    int alturaAtual;
-    int alturaDestino;
-    LiquidCrystal *lcd;
-    //Variaveis do servo
-    Servo servo;
-    int positionServo;
-    bool setPosServo(int pos);
+    bool setPosServo(int pos); // Set position do servo
     
-    void controlePID(int sensorRead);
-    void irParaAndar();
+    int controlePID(int sensorRead); // Função que realiza controle PID retornando o comando par ao servo
+    void irParaAndar(); // Função utilizada para mover para andar
+    
+    String estadoAtual; //Declaraçao estado atual
+    bool estadoWaitingForInput(); //Declaração função de estados
 
-    //Declaraçao estado atual
-    String estadoAtual;
-    //Declaração função de estados
-    bool estadoWaitingForInput();
-    bool estadoMoving();
-    // Função que lê estado
-    String lerEstado();
-    // Display Andares
-    String displayAndares();
-    // Função que lê valor do botão
-    bool lerBotaoGo();
-    // Função que lê valor do botão
-    bool lerBotaoTroca();
-    // Função que lê valor dos botoes
-    bool lerBotoes();
-    // Função que lê valor do botão
-    int lerSonar();
-    // Função para mostrar na tela
-    void mostrarNaTela(String mensagem);
+    String lerEstado(); // Função que lê estado
+    String displayAndares();// Função para display Andares
+    
+    bool lerBotaoGo(); // Função que lê valor do botão GO
+    bool lerBotaoTroca(); // Função que lê valor do botão TROCA
+    bool lerBotoes();// Função que lê valor doS dois botões
+    int lerSonar();// Função que lê valor do sensor utlrasom
 
-    // Funçao que manda um estado
-    bool configurarEstado(String estado);
-    // Declaração função configurar elevador
-    bool configurarElevador();
+    bool configurarElevador(); // Função utilizada para configurar um elevador
+    void mostrarNaTela(String mensagem); // Função para mostrar na tela
+    bool configurarEstado(String estado);// Funçao que configura um estado
   };
   
 #endif

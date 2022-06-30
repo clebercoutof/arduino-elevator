@@ -11,6 +11,14 @@ static AutoPID controladorPID(&sensorReadValuePID, &setPointPID, &outputValuePID
                       ,KP, KI, KD);
 
 static Ultrasonic ultrasonic(PINO_OUTPUT_SENSOR,PINO_INPUT_SENSOR);
+static Servo servo; 
+static LiquidCrystal lcd(PINO_LCD_RS,
+                         PINO_LCD_ENABLE,
+                          PINO_LCD_D4,
+                          PINO_LCD_D5,
+                          PINO_LCD_D6,
+                          PINO_LCD_D7);
+
 
 // O construtor é chamado quando eu declaro o meu objeto
 Elevador::Elevador() {
@@ -73,17 +81,12 @@ bool Elevador::configurarLCD(){
   pinD7 = PINO_LCD_D7;
   pinVDD = PINO_LCD_VDD;
   pinLCDBacklight = PINO_LCD_BACKLIGHT;
-  //CREATES LCD OBJECT
-  LiquidCrystal *lcd = new LiquidCrystal(pinRs,
-                          pinEn,
-                          pinD4,
-                          pinD5,
-                          pinD6,
-                          pinD7);
-  // LIGA LCD
-  lcd->begin(pinLCDBacklight, pinVDD);
-  lcd->print("LOVE IN THE ELEVATOR");
+  
+  //LIGA LCD
+  lcd.begin(pinLCDBacklight, pinVDD);
+  lcd.print("ELEVADOR");
 };
+
 
 //Função para ler distância utilizando sonar
 int Elevador::lerSonar(){
@@ -141,6 +144,7 @@ bool Elevador::lerBotaoGo(){
    int digitalVal = digitalRead(pinButtonGo); // Take a reading
    if(HIGH == digitalVal and andarAtual.piso != andarDestino.piso){
      estadoAtual = MOVENDO;
+     mostrarNaTela("INDO PARA ANDAR:" + andarDestino.nome);
      delay(777);
      return true;}
    else if(HIGH == digitalVal and andarAtual.piso == andarDestino.piso){
@@ -154,7 +158,6 @@ bool Elevador::lerBotaoGo(){
 
 bool Elevador::lerBotoes(){
    if(lerBotaoGo()){
-      mostrarNaTela("INDO PARA ANDAR:" + andarDestino.nome);
       delay(777);
     return true;
    }
@@ -194,7 +197,7 @@ bool Elevador::setPosServo(int pos){
   servo.write(pos);
 }
 
-void Elevador::controlePID(int sensorRead){
+int Elevador::controlePID(int sensorRead){
     delayMicroseconds(777);
     sensorReadValuePID = sensorRead;
     setPointPID = double(andarDestino.altura); // Valor desejado (Altura do Andar)
@@ -203,21 +206,24 @@ void Elevador::controlePID(int sensorRead){
     mostrarNaTela("INPUT PID:" + String(sensorReadValuePID));
     mostrarNaTela("SETPOINT PID:" + String(setPointPID));
     mostrarNaTela("OUTPUT PID:" + String(outputValuePID));
+    return outputValuePID;
+
 }
 
 void Elevador::irParaAndar(){
   // ENQUANTO ALTURA ATUAL NÃO FOR ALTURA DESEJADA + OU - TOLERANCIA
   int distancia_sonar = lerSonar();
-  controlePID(distancia_sonar);
-
   int max_dist = andarDestino.altura + TOLERANCIA_ALTURA_ANDAR;
   int min_dist = andarDestino.altura - TOLERANCIA_ALTURA_ANDAR;
-  delay(777);
-
   if(distancia_sonar <= max_dist and distancia_sonar>= min_dist){
     mostrarNaTela("CHEGOU NO ANDAR");
+    setPosServo(SERVO_STOP);// STOP SERVO
     estadoAtual = PARADO;
   }
+  else{
+    int servo_input = controlePID(distancia_sonar);
+    setPosServo(servo_input);}
+  delay(777);
 }
 
 // Funçao para setar o estado da maquina de estado do codigo
