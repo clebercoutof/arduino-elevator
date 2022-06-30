@@ -77,6 +77,9 @@ class Elevador {
     bool setPosServo(int pos);
     //Declaraçao estado atual
     String estadoAtual;
+    //Ultrasonic object
+    Ultrasonic *ultrasonic; 
+
     //Declaração função de estados
     bool estadoWaitingForInput();
     bool estadoMoving();
