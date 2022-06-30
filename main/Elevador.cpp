@@ -1,14 +1,16 @@
 // Elevador.cpp
 #include "Elevador.h"
 
-    //Objeto do PID
-    double sensorReadValuePID; // Valor lido pelo sensor
-    double setPointPID; // Valor desejado (Altura do Andar)
-    double outputValuePID; // Valor enviado para movimentação do servo
+//Objeto do PID
+double sensorReadValuePID; // Valor lido pelo sensor
+double setPointPID; // Valor desejado (Altura do Andar)
+double outputValuePID; // Valor enviado para movimentação do servo
 
-    static AutoPID controladorPID(&sensorReadValuePID, &setPointPID, &outputValuePID
-                          ,OUTPUT_MIN, OUTPUT_MAX
-                          ,KP, KI, KD);
+static AutoPID controladorPID(&sensorReadValuePID, &setPointPID, &outputValuePID
+                      ,OUTPUT_MIN, OUTPUT_MAX
+                      ,KP, KI, KD);
+
+static Ultrasonic ultrasonic(PINO_OUTPUT_SENSOR,PINO_INPUT_SENSOR);
 
 // O construtor é chamado quando eu declaro o meu objeto
 Elevador::Elevador() {
@@ -34,8 +36,6 @@ Elevador::Elevador() {
 bool Elevador::configurarElevador(){
   configurarDispositivos();
   controladorPID.setTimeStep(500);
-  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
-
   //configurarLCD();
   return true;
 };
@@ -46,12 +46,11 @@ bool Elevador::configurarDispositivos(){
   // Fala para biblioteca do servo qual pino ele está conectado
   servo.attach(pinServo);
   // servo.write(SERVO_START_POSITION);
-
+  
   // Configuração do sensor
   pinTrigSensor = PINO_OUTPUT_SENSOR;
   pinEchoSensor = PINO_INPUT_SENSOR;
 
-  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
   pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
@@ -88,8 +87,6 @@ bool Elevador::configurarLCD(){
 
 //Função para ler distância utilizando sonar
 int Elevador::lerSonar(){
-  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
-
   pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
@@ -104,7 +101,7 @@ int Elevador::lerSonar(){
   digitalWrite(pinTrigSensor, LOW);
 
   // Calculate the distance:
-  distancia = (ultrasonic->Ranging(CM)); //VARIÁVEL GLOBAL RECEBE O VALOR DA DISTÂNCIA MEDIDA
+  distancia = (ultrasonic.Ranging(CM)); //VARIÁVEL GLOBAL RECEBE O VALOR DA DISTÂNCIA MEDIDA
   
   delay(50);
   display_distancia = "Distancia Sonar: " + String(distancia) + " cm.";
@@ -210,9 +207,9 @@ void Elevador::controlePID(int sensorRead){
 
 void Elevador::irParaAndar(){
   // ENQUANTO ALTURA ATUAL NÃO FOR ALTURA DESEJADA + OU - TOLERANCIA
-  int sensorSim = 10;
-  controlePID(sensorSim);
-  // delay(777);
+  int distancia_sonar = lerSonar();
+  controlePID(distancia_sonar);
+  delay(777);
   //estadoAtual = PARADO;
 }
 

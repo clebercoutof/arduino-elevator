@@ -83,9 +83,6 @@ class Elevador {
     Servo servo;
     int positionServo;
     bool setPosServo(int pos);
-
-    //Ultrasonic object
-    Ultrasonic *ultrasonic; 
     
     void controlePID(int sensorRead);
     void irParaAndar();
