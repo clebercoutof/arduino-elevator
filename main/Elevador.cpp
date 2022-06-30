@@ -209,8 +209,15 @@ void Elevador::irParaAndar(){
   // ENQUANTO ALTURA ATUAL NÃO FOR ALTURA DESEJADA + OU - TOLERANCIA
   int distancia_sonar = lerSonar();
   controlePID(distancia_sonar);
+
+  int max_dist = andarDestino.altura + TOLERANCIA_ALTURA_ANDAR;
+  int min_dist = andarDestino.altura - TOLERANCIA_ALTURA_ANDAR;
   delay(777);
-  //estadoAtual = PARADO;
+
+  if(distancia_sonar <= max_dist and distancia_sonar>= min_dist){
+    mostrarNaTela("CHEGOU NO ANDAR");
+    estadoAtual = PARADO;
+  }
 }
 
 // Funçao para setar o estado da maquina de estado do codigo
