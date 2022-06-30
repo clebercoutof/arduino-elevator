@@ -6,6 +6,7 @@
 #include <Servo.h> //INCLUSÃO DA BIBLIOTECA DE SERVO
 #include <Ultrasonic.h>  //INCLUSAO DA BIBLIOTECA DE SERVO
 #include <LiquidCrystal.h> // INCLUSAO BIBLIOTECA LCD
+#include <AutoPID.h>
 
 const int PINO_LCD_VDD = 2; // PINO PARA ATIVAR LCD
 const int PINO_LCD_BACKLIGHT = 16; // PINO PARA ATIVAR PINO_LCD
@@ -20,8 +21,8 @@ const int PINO_LCD_D7 = 5; //PINO DIGITAL UTILIZADO PELO LCD
 const int PINO_SERVO = 6; //PINO DIGITAL UTILIZADO PELO SERVO
 const int PINO_BOTAO_TROCA = 7; //PINO DIGITAL UTILIZADO PELO BOTAO
 const int PINO_BOTAO_GO = 10; //PINO DIGITAL UTILIZADO PELO BOTAO
-const int PINO_INPUT_SENSOR = 8; //PINO DIGITAL UTILIZADO PELO SONAR
-const int PINO_OUTPUT_SENSOR = 9; //PINO DIGITAL UTILIZADO PELO SONAR
+const int PINO_INPUT_SENSOR = 12; //PINO DIGITAL UTILIZADO PELO SONAR
+const int PINO_OUTPUT_SENSOR = 13; //PINO DIGITAL UTILIZADO PELO SONAR
 
 const int SERVO_START_POSITION = 0; // POSICAO INICIAL DO SERVO
 
@@ -35,6 +36,12 @@ const String PARADO = "PARADO";
 
 //Tolerancia de altura em centimetrosc
 const int TOLERANCIA_ALTURA_ANDAR = 1;
+
+#define OUTPUT_MIN 0
+#define OUTPUT_MAX 300
+#define KP 1.0
+#define KI 0.0
+#define KD 0.0
 
 struct Andar{
   int piso;
@@ -76,11 +83,21 @@ class Elevador {
     Servo servo;
     int positionServo;
     bool setPosServo(int pos);
-    //Declaraçao estado atual
-    String estadoAtual;
+
     //Ultrasonic object
     Ultrasonic *ultrasonic; 
 
+    //Objeto do PID
+    AutoPID *controladorPID;
+    double *sensorReadValue; // Valor lido pelo sensor
+    double *setPoint; // Valor desejado (Altura do Andar)
+    double *OutputValue; // Valor enviado para movimentação do servo
+    
+    void controlePID();
+    void irParaAndar();
+
+    //Declaraçao estado atual
+    String estadoAtual;
     //Declaração função de estados
     bool estadoWaitingForInput();
     bool estadoMoving();

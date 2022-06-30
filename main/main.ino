@@ -14,5 +14,8 @@ void loop(){
 
   while(elevador->estadoAtual == PARADO){
     elevador->lerBotoes();}
-
+  
+  while(elevador->estadoAtual == MOVENDO){
+    elevador->irParaAndar();
+  }
   };

@@ -24,7 +24,12 @@ Elevador::Elevador() {
 
 bool Elevador::configurarElevador(){
   configurarDispositivos();
-  // configurarLCD();
+  controladorPID->setTimeStep(500);
+  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
+  AutoPID *controladorPID= new AutoPID(sensorReadValue, setPoint, OutputValue 
+                               ,OUTPUT_MIN, OUTPUT_MAX 
+                               ,KP, KI, KD);
+  //configurarLCD();
   return true;
 };
 
@@ -39,7 +44,7 @@ bool Elevador::configurarDispositivos(){
   pinTrigSensor = PINO_OUTPUT_SENSOR;
   pinEchoSensor = PINO_INPUT_SENSOR;
 
-  //Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
+  Ultrasonic *ultrasonic = new Ultrasonic(pinTrigSensor,pinEchoSensor);
   pinMode(pinTrigSensor, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(pinEchoSensor, INPUT); // Sets the echoPin as an INPUT
 
@@ -146,6 +151,7 @@ bool Elevador::lerBotaoGo(){
 bool Elevador::lerBotoes(){
    if(lerBotaoGo()){
       mostrarNaTela("INDO PARA ANDAR:" + andarDestino.nome);
+      delay(777);
     return true;
    }
    else if(lerBotaoTroca()){
@@ -157,7 +163,8 @@ bool Elevador::lerBotoes(){
       //mostrarNaTela("SEM BOTAO");
       //displayAndares();
     return false;
-  }}
+  }
+}
 
 
 String Elevador::displayAndares(){
@@ -181,6 +188,25 @@ void Elevador::mostrarNaTela(String mensagem){
 bool Elevador::setPosServo(int pos){
   mostrarNaTela("SETTING SERVO POS");
   servo.write(pos);
+}
+
+void Elevador::controlePID(){
+    *OutputValue = 0.0;
+    *sensorReadValue = 10.0 ; // Valor lido pelo sensor
+    delayMicroseconds(777);
+    *setPoint = 100.0; // Valor desejado (Altura do Andar)
+    delayMicroseconds(777);
+    controladorPID->run();
+    mostrarNaTela("INPUT PID:" + String(*sensorReadValue));
+    mostrarNaTela("SETPOINT PID:" + String(*setPoint));
+    mostrarNaTela("OUTPUT PID:" + String(*OutputValue));
+}
+
+void Elevador::irParaAndar(){
+  // ENQUANTO ALTURA ATUAL NÃO FOR ALTURA DESEJADA + OU - TOLERANCIA
+  controlePID();
+  // delay(777);
+  //estadoAtual = PARADO;
 }
 
 // Funçao para setar o estado da maquina de estado do codigo
