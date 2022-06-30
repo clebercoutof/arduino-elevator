@@ -1,5 +1,6 @@
 #include "Elevador.h"//INCLUSÃO DA BIBLIOTECA NECESSÁRIA
 
+bool ELEVADOR_LIGADO = true;
 //Objeto Elevador
 Elevador *elevador;
 
@@ -12,10 +13,14 @@ void loop(){
   Elevador *elevador = new Elevador();
   elevador->configurarElevador();
 
-  while(elevador->estadoAtual == PARADO){
-    elevador->lerBotoes();}
-  
-  while(elevador->estadoAtual == MOVENDO){
-    elevador->irParaAndar();
+  // Elevador LIGADO
+  while(ELEVADOR_LIGADO){
+    // Loop de esperar por comandos
+    while(elevador->estadoAtual == PARADO){
+      elevador->lerBotoes();}
+    // Loop de ir para andar
+    while(elevador->estadoAtual == MOVENDO){
+      elevador->irParaAndar();
+    }
   }
   };

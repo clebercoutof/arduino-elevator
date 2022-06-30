@@ -217,13 +217,13 @@ void Elevador::irParaAndar(){
   int min_dist = andarDestino.altura - TOLERANCIA_ALTURA_ANDAR;
   if(distancia_sonar <= max_dist and distancia_sonar>= min_dist){
     mostrarNaTela("CHEGOU NO ANDAR");
-    setPosServo(SERVO_STOP);// STOP SERVO
+    setPosServo(SERVO_STOP_POSITION); // STOP SERVO
     estadoAtual = PARADO;
   }
   else{
     int servo_input = controlePID(distancia_sonar);
     setPosServo(servo_input);}
-  delay(777);
+  delay(77);
 }
 
 // Funçao para setar o estado da maquina de estado do codigo

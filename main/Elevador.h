@@ -25,12 +25,12 @@ const int PINO_INPUT_SENSOR = 12; //PINO DIGITAL UTILIZADO PELO SONAR
 const int PINO_OUTPUT_SENSOR = 13; //PINO DIGITAL UTILIZADO PELO SONAR
 
 const int SERVO_START_POSITION = 0; // POSICAO INICIAL DO SERVO
+const int SERVO_STOP_POSITION = 90; // POSICAO PARA PARAR O SERVO
 
-const int SERVO_STOP = 90; 
 // Altura dos andares em centimetro
 const int ALTURA_0 = 0;
-const int ALTURA_1 = 30;
-const int ALTURA_2 = 60;
+const int ALTURA_1 = 44;
+const int ALTURA_2 = 85;
 
 const String MOVENDO = "MOVENDO";
 const String PARADO = "PARADO";
@@ -41,8 +41,8 @@ const int TOLERANCIA_ALTURA_ANDAR = 1;
 #define OUTPUT_MIN -300
 #define OUTPUT_MAX 300
 #define KP 1.0
-#define KI 0.0
-#define KD 0.0
+#define KI 0.8
+#define KD 0.5
 
 struct Andar{
   int piso;
